@@ -1,59 +1,82 @@
 const express = require("express");
-const bodyParser = require('body-parser')
-const addJobContoller = require('./controller')
-var router = express.Router();
-const jobs = require("../bree-zemoso-int/bree/src/model/jobs");
-const controllerHandler = require('./router');
 const app = express();
 const Bree = require("/home/sahiM/Desktop/bree-zemoso-int/bree/src");
-const path = require('path');
-
-const jobName = 'send SMS';
-const jobConfig = {
-  // id: Math.random(),
-  name: jobName,
-  worker: path.join(__dirname, `sendSMS.js?jobName=${jobName}`),
-  // rest of the job configuration
-};
-const timestamp = new Date().toISOString().replace(/:/g, '-').replace(/\./g, '-');
-
-// Append the timestamp to the file name
-const fileName = `${jobConfig.name}${timestamp}.js`;
 
 const bree = new Bree({
   mysqlDatabase: {
     driverUrl: "mysql://root:Sahithi@231@127.0.0.1:3306/bree",
     jobInterval: 10000,
-    maxJobs: 5,
+    maxJobs: 2,
+    port: 5000,
   },
-  // jobs: [jobConfig],
-  worker: path.join(__dirname, 'jobs', 'worker.js'),
-  // jobs: [
-    // {
-    //   name: "dummy",
-    //   worker: {
-    //     workerData: {
-    //       name: "Mark",
-    //     },
-    //   },
-    //   interval: "6s",
-    // },
-  // ],
 });
+app.get("/heartbeat", (req, res) => {
+  res.status(200).send("Application is running");
+});
+bree.start();
+bree.put(
+  {
+    name: "job3",
+    time: null,
+    data: '{"jobName" : "Job3"}',
+    isRecurringJob: false,
+  }
+  // {
+  //   name: "job4",
+  //   time: null,
+  //   data: '{"jobName" : "Job4"}',
+  //   isRecurringJob: false,
+  // },
+// ]
+  // {
+  //   name: "job5",
+  //   time: null,
+  //   data: '{"jobName" : "Job5"}',
+  //   isRecurringJob: false,
+  // },
+  // {
+  //   name: "job3",
+  //   time: null,
+  //   data: '{"jobName" : "Job3"}',
+  //   isRecurringJob: false,
+  // },
+  // {
+  //   name: "job4",
+  //   time: null,
+  //   data: '{"jobName" : "Job4"}',
+  //   isRecurringJob: false,
+  // },
+  // {
+  //   name: "job6",
+  //   time: '2023-02-27 14:02:00',
+  //   data: '{"jobName" : "Job6"}',
+  //   isRecurringJob: false,
+  // },
+  // {
+  //   name: "send MAIL",
+  //   time: "* * * * *",
+  //   data: '{"emailTo": "LDP","emailFrom": "Dhanraj","emailMessage": "Hey! How are you?"}',
+  //   isRecurringJob: true,
+  //   isActive: false,
+  // },
+  // {
+  //   name: "dummy",
+  //   time: "*/2 * * * *",
+  //   data: '{"emailTo": "LDP","emailFrom": "Dhanraj","emailMessage": "Hey! How are you?"}',
+  //   isRecurringJob: true,
+  // },
+);
+
+bree.put(
+  {
+    name: "job4",
+    time: null,
+    data: '{"jobName" : "Job4"}',
+    isRecurringJob: false,
+  }
+)
 
 
 
-
-  bree.start();
-
-
-// console.log("jobs------");
-// app.use(bodyParser.json());;
-// const controller = controllerHandler;
-// console.log("post method hit");
-// app.post('/api/user', controller(addJobContoller, (req, res, next) => [req.body.data.time, req.body.data.name, req.body.data.data,req.body.data.status]));
-// app.get("/:universalURL", (req, res) => {
-//   res.send("404 URL NOT FOUND");
-// });
-
-// app.listen(5000, () => console.log("listening on port 5000"));
+// bree.stop();
+app.listen(5000, () => console.log("listening on port 5000"));
